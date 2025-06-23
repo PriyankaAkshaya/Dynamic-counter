@@ -1,0 +1,35 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity task5Dyncounter is
+    port (
+        clk, clr : in std_logic;
+        cout : out std_logic_vector(3 downto 0);
+        Y : out std_logic
+    );
+end task5Dyncounter;
+
+architecture behave of task5Dyncounter is
+    signal temp : std_logic_vector(3 downto 0);
+    signal clreff : std_logic;
+    signal not1, not3 : std_logic;
+    signal and_output : std_logic;
+begin
+    not1 <= not temp(1);
+    not3 <= not temp(3);
+    and_output <= not1 and not3 and temp(0) and temp(2);
+    clreff <= clr or and_output;
+    cnt_block: process(clk)
+    begin
+        if rising_edge(clk) then
+            if clreff = '1' then
+                temp <= "0000";
+            else
+                temp <= temp + 1;
+            end if;
+        end if;
+    end process cnt_block;
+    cout <= temp;
+    Y <= not1 and not3;
+end behave;
